@@ -14,8 +14,8 @@ class TestOrderList:
 
     @allure.title('Проверка получения списка заказов с указанием ID курьера')
     @allure.description('Получаем список заказов и проверяем ответ')
-    def test_list_orders_success_for_courier_id(self, courier_id):
-        response = requests.get(f'{Urls.QA_SCOOTER_URL}{Endpoints.get_orders_list}?courierId={courier_id}')
+    def test_list_orders_success_for_courier_id(self, courier):
+        response = requests.get(f'{Urls.QA_SCOOTER_URL}{Endpoints.get_orders_list}?courierId={courier[1]}')
         assert response.status_code == 200
         assert "orders" in response.json()
 

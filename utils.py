@@ -24,17 +24,32 @@ class CourierDataGenerator:
         return data
 
     @staticmethod
-    @allure.step("Генерируем невалидные фейковые данные (отсутствует обязательное поле) для создания курьера")
-    def generate_fake_invalid_courier_data_no_field(data_absent):
+    @allure.step("Генерируем невалидные фейковые данные (пустая строка) для создания курьера")
+    def generate_fake_invalid_courier_data_empty_field(data_empty):
         fake = Faker("ru_RU")
         login = fake.user_name()
         firstname = fake.first_name()
         password = fake.password()
         data = {
-            "login": "" if data_absent == "login" else login,
+            "login": "" if data_empty == "login" else login,
             "firstName": firstname,
-            "password": "" if data_absent == "password" else password
+            "password": "" if data_empty == "password" else password
         }
+
+        return data
+
+    @staticmethod
+    @allure.step("Генерируем невалидные фейковые данные (отсутствуют обязательные поля) для создания курьера")
+    def generate_fake_invalid_courier_data_no_field(contained_data):
+        fake = Faker("ru_RU")
+        firstname = fake.first_name()
+        data = {"firstName": firstname}
+        if "login" in contained_data:
+            login = fake.user_name()
+            data["login"] = login
+        if "password" in contained_data:
+            password = fake.password()
+            data["password"] = password
 
         return data
 
@@ -67,17 +82,3 @@ class CourierUtils:
     def delete_courier(courier_id):
         del_response = requests.delete(f'{Urls.QA_SCOOTER_URL}{Endpoints.delete_courier}{courier_id}')
         return del_response
-
-
-class DataOrder:
-    data = {
-        "firstName": "Мария",
-        "lastName": "Иванова",
-        "address": "г.Москва",
-        "metroStation": 1,
-        "phone": "+7 999 123 45 67",
-        "rentTime": 4,
-        "deliveryDate": "2025-11-20",
-        "comment": "Тестовый заказ",
-        "color": [""]
-    }

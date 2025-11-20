@@ -2,7 +2,7 @@ import json
 import allure
 import pytest
 import requests
-from utils import DataOrder
+from data import DataOrder
 from endpoints import Endpoints
 from urls import Urls
 
