@@ -4,6 +4,7 @@ import requests
 from utils import CourierDataGenerator, CourierUtils
 from endpoints import Endpoints
 from urls import Urls
+from data import Messages
 
 
 class TestLoginCourier:
@@ -23,15 +24,13 @@ class TestLoginCourier:
         ["password"]
     ])
     def test_courier_login_without_parameters_failed(self, courier, contained_data):
-        login_data = courier[0]
-        if not 'login' in contained_data:
-            login_data['login'] = ""
-        if not 'password' in contained_data:
-            login_data['password'] = ""
-        print(login_data)
+        login_data = {"firstName": "", "login": "", "password": ""}
+        for data_field in contained_data:
+            login_data[data_field] = courier[0][data_field]
+        
         response = CourierUtils.login_courier(login_data)
         assert response.status_code == 400
-        assert "Недостаточно данных для входа" in response.text
+        assert response.json()['message'] == Messages.not_enough_data_to_login_message
 
     @allure.title('Проверка ошибки при авторизации курьера с несуществующими данными')
     @allure.description('Отправляем запрос на авторизацию в сервисе с несуществующими данными и проверяем ответ')
@@ -39,4 +38,4 @@ class TestLoginCourier:
         null_data = CourierDataGenerator.generate_null_invalid_courier_data()
         response = requests.post(f'{Urls.QA_SCOOTER_URL}{Endpoints.login_courier}', data=null_data)
         assert response.status_code == 404
-        assert "Учетная запись не найдена" in response.text
+        assert response.json()['message'] == Messages.login_not_found_message

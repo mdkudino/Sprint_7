@@ -1,6 +1,7 @@
 import allure
 import pytest
 from utils import CourierDataGenerator, CourierUtils
+from data import Messages
 
 class TestCreateCourier:
 
@@ -12,7 +13,7 @@ class TestCreateCourier:
         response = CourierUtils.create_courier(courier_data)
 
         assert response.status_code == 201
-        assert "ok" in response.text
+        assert response.json()["ok"] == True
 
         login_resp = CourierUtils.login_courier(courier_data)
         courier_id = CourierUtils.get_courier_id(login_resp)
@@ -26,12 +27,12 @@ class TestCreateCourier:
         response = CourierUtils.create_courier(courier_data)
 
         assert response.status_code == 201
-        assert "ok" in response.text
+        assert response.json()["ok"] == True
 
         response_second = CourierUtils.create_courier(courier_data)
 
         assert response_second.status_code == 409
-        assert "Этот логин уже используется" in response_second.text
+        assert response_second.json()["message"] == Messages.double_login_message
         
         login_resp = CourierUtils.login_courier(courier_data)
         courier_id = CourierUtils.get_courier_id(login_resp)
@@ -49,7 +50,7 @@ class TestCreateCourier:
         response = CourierUtils.create_courier(courier_data)
     
         assert response.status_code == 400
-        assert "Недостаточно данных для создания учетной записи" in response.text
+        assert response.json()['message'] == Messages.not_enough_data_to_create_message
 
     @allure.title('Проверка ошибки при создании курьера с отсутствующими обязательными полями')
     @allure.description('Отправляем запрос без обязательных полей и проверяем ошибку')
@@ -61,4 +62,4 @@ class TestCreateCourier:
         courier_data = CourierDataGenerator.generate_fake_invalid_courier_data_no_field(contained_data)
         response = CourierUtils.create_courier(courier_data)
         assert response.status_code == 400
-        assert "Недостаточно данных для создания учетной записи" in response.text
+        assert response.json()['message'] == Messages.not_enough_data_to_create_message

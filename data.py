@@ -11,3 +11,10 @@ class DataOrder:
         "comment": "Тестовый заказ",
         "color": [""]
     }
+
+
+class Messages:
+    double_login_message = "Этот логин уже используется. Попробуйте другой."
+    not_enough_data_to_create_message = "Недостаточно данных для создания учетной записи"
+    not_enough_data_to_login_message = "Недостаточно данных для входа"
+    login_not_found_message = "Учетная запись не найдена"

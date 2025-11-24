@@ -1,1 +1,0 @@
-{'login': 'ijakushev', 'firstName': 'Остап', 'password': ''}

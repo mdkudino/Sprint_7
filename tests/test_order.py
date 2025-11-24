@@ -24,4 +24,4 @@ class TestOrder:
 
         response = requests.post(f'{Urls.QA_SCOOTER_URL}{Endpoints.create_order}', headers=headers, data=data)
         assert response.status_code == 201
-        assert "track" in response.text
+        assert "track" in response.json()
